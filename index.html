@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibecoding Playbook</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Vibecoding Playbook</span>
+            </div>
+            <nav class="header-nav">
+                <button class="btn-icon" id="searchBtn" aria-label="Search" title="Search (Cmd/Ctrl+K)">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button class="btn-icon" id="langToggle" aria-label="Language">
+                    <span class="lang-text">EN</span>
+                </button>
+                <button class="btn-icon" id="themeToggle" aria-label="Toggle theme">
+                    <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+                        <path d="M10 2v2M10 16v2M18 10h-2M4 10H2M15.66 4.34l-1.41 1.41M5.75 14.25l-1.41 1.41M15.66 15.66l-1.41-1.41M5.75 5.75L4.34 4.34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M17 10.5A7 7 0 1 1 9.5 3a5.5 5.5 0 0 0 7.5 7.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="landing-main">
+        <section class="hero">
+            <h1 class="hero-title" data-i18n="hero.title">Vibecoding Playbook</h1>
+            <p class="hero-subtitle" data-i18n="hero.subtitle">
+                Behold farten fra vibecoding, men gjør prosjektet trygt, forutsigbart og ship-ready.
+            </p>
+            <div class="hero-cta">
+                <a href="playbook-full.html" class="btn btn-primary">
+                    <span data-i18n="hero.fullPlaybook">Full Playbook</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <a href="playbook-quickstart.html" class="btn btn-secondary">
+                    <span data-i18n="hero.quickstart">Quickstart</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="remembered-section">
+            <div class="remembered-card">
+                <div class="remembered-header">
+                    <h2 class="remembered-title">
+                        <span class="remembered-icon">✓</span>
+                        <span data-i18n="remembered.title">HAR DU HUSKET?</span>
+                    </h2>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">0%</p>
+                </div>
+                <ul class="checklist" id="checklist">
+                    <li class="checklist-item">
+                        <label>
+                            <input type="checkbox" data-key="context-pack">
+                            <span class="checkbox-custom"></span>
+                            <span class="checklist-text" data-i18n="remembered.item1">Oppdatert Context-Pack.md i dag</span>
+                        </label>
+                    </li>
+                    <li class="checklist-item">
+                        <label>
+                            <input type="checkbox" data-key="handoff">
+                            <span class="checkbox-custom"></span>
+                            <span class="checklist-text" data-i18n="remembered.item2">Brukt handoff-mal ved ny chat</span>
+                        </label>
+                    </li>
+                    <li class="checklist-item">
+                        <label>
+                            <input type="checkbox" data-key="verify-rollback">
+                            <span class="checkbox-custom"></span>
+                            <span class="checklist-text" data-i18n="remembered.item3">Verify + rollback i hver endring</span>
+                        </label>
+                    </li>
+                    <li class="checklist-item">
+                        <label>
+                            <input type="checkbox" data-key="no-secrets">
+                            <span class="checkbox-custom"></span>
+                            <span class="checklist-text" data-i18n="remembered.item4">Ingen secrets i repo</span>
+                        </label>
+                    </li>
+                    <li class="checklist-item">
+                        <label>
+                            <input type="checkbox" data-key="minimal-diffs">
+                            <span class="checkbox-custom"></span>
+                            <span class="checklist-text" data-i18n="remembered.item5">Minimal diffs</span>
+                        </label>
+                    </li>
+                    <li class="checklist-item">
+                        <label>
+                            <input type="checkbox" data-key="prototype-prod">
+                            <span class="checkbox-custom"></span>
+                            <span class="checklist-text" data-i18n="remembered.item6">Prototype i /prototype, production i /app</span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="quick-links">
+            <h2 class="section-title" data-i18n="quickLinks.title">Quick Links</h2>
+            <div class="links-grid">
+                <a href="playbook-full.html#prinsipper" class="link-card">
+                    <div class="link-icon">📋</div>
+                    <h3 data-i18n="quickLinks.principles">Prinsipper</h3>
+                    <p data-i18n="quickLinks.principlesDesc">Kontrollflater og effektiv koding</p>
+                </a>
+                <a href="playbook-full.html#roller-deg--ai" class="link-card">
+                    <div class="link-icon">👥</div>
+                    <h3 data-i18n="quickLinks.roles">Roller</h3>
+                    <p data-i18n="quickLinks.rolesDesc">Menneske og AI-roller</p>
+                </a>
+                <a href="playbook-full.html#prompt-maler-per-rolle" class="link-card">
+                    <div class="link-icon">💬</div>
+                    <h3 data-i18n="quickLinks.prompts">Prompts</h3>
+                    <p data-i18n="quickLinks.promptsDesc">Maler for hver rolle</p>
+                </a>
+                <a href="playbook-full.html#dokumentmaler-adr-experiment-runbooks" class="link-card">
+                    <div class="link-icon">📝</div>
+                    <h3 data-i18n="quickLinks.templates">Templates</h3>
+                    <p data-i18n="quickLinks.templatesDesc">ADR, experiment, runbooks</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p data-i18n="footer.text">Vibecoding Playbook - Cursor + Claude Sonnet/Opus</p>
+    </footer>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-modal-content">
+            <div class="search-input-wrapper">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search..." autocomplete="off">
+                <button class="search-close" id="searchClose">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+

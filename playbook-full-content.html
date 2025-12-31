@@ -1,0 +1,478 @@
+<h1 id="vibecoding-playbook-cursor-opussonnet-fullversjon">Vibecoding Playbook (Cursor + Opus/Sonnet) — Fullversjon</h1>
+
+<blockquote>Mål: Behold farten fra vibecoding, men gjør prosjektet trygt, forutsigbart og ship-ready.</blockquote>
+
+<h2 id="innhold">Innhold</h2>
+<ul>
+<li><a href="#prinsipper">Prinsipper</a></li>
+<li><a href="#prosjektstruktur-minimal-men-hard">Prosjektstruktur (minimal men hard)</a></li>
+<li><a href="#source-of-truth-og-styringsdokumenter">Source of truth og styringsdokumenter</a></li>
+<li><a href="#roller-deg--ai">Roller (deg + AI)</a></li>
+<li><a href="#faser-i-prosjektet">Faser i prosjektet</a></li>
+<li><a href="#non-negotiables-vs-negotiables">Non-negotiables vs negotiables</a></li>
+<li><a href="#hygiene-rutiner">Hygiene-rutiner</a></li>
+<li><a href="#ny-chat-og-handoff">Ny chat og handoff</a></li>
+<li><a href="#agent-mode-definition-of-done">Agent-mode Definition of Done</a></li>
+<li><a href="#prompt-maler-per-rolle">Prompt-maler per rolle</a></li>
+<li><a href="#dokumentmaler-adr-experiment-runbooks">Dokumentmaler (ADR, experiment, runbooks)</a></li>
+<li><a href="#debugging-anti-bombastiske-regler">Debugging: anti-bombastiske regler</a></li>
+</ul>
+
+<hr>
+
+<h2 id="prinsipper">Prinsipper</h2>
+
+<h3 id="effektivt-og-trygt-kontrollflater">Effektivt og trygt = “kontrollflater”</h3>
+<p>Du vil ha:</p>
+<ol>
+<li><strong>Én sannhet</strong> om mål og beslutninger (brief + ADRs)</li>
+<li><strong>Skille mellom prototype og produktkode</strong></li>
+<li><strong>Automatiske rails</strong> (lint/test/CI) som fanger feil tidlig</li>
+<li><strong>Målbare hypoteser</strong> når du feilsøker</li>
+</ol>
+
+<h3 id="ting-du-br-gjre-selv-uten-ai">Ting du bør gjøre selv (uten AI)</h3>
+<ul>
+<li><strong>Prioritering / scope</strong></li>
+</ul>
+<p>  - Hva er v1? Hva er v2? Hva kuttes?</p>
+<ul>
+<li><strong>Sikkerhet/tilgangsstyring og “go/no-go”</strong></li>
+</ul>
+<p>  - Secrets, auth, betalingsløp, eksponerte porter, compliance.</p>
+<ul>
+<li><strong>Endelig arkitekturavgjørelser</strong></li>
+</ul>
+<p>  - AI kan foreslå, men du tar beslutningen og skriver “decision record”.</p>
+<ul>
+<li><strong>Kritisk debugging med “ground truth”</strong></li>
+</ul>
+<p>  - Når observasjonene er få eller motstridende: du styrer målingene/loggene.</p>
+<ul>
+<li><strong>Kontrakt/akseptkriterier</strong></li>
+</ul>
+<p>  - “Hva betyr ferdig?” må være menneskelig definert.</p>
+
+<hr>
+
+<h2 id="prosjektstruktur-minimal-men-hard">Prosjektstruktur (minimal men hard)</h2>
+
+<p><strong>Root</strong></p>
+<ul>
+<li><code>README.md</code> (1 skjerm: hva, hvordan kjøre, link til brief)</li>
+<li><code>docs/</code></li>
+</ul>
+<p>  - <code>00-Project-Brief.md</code> <em>(source of truth)</em></p>
+<p>  - <code>01-NonNegotiables.md</code></p>
+<p>  - <code>02-Architecture.md</code> <em>(høy-nivå + diagram)</em></p>
+<p>  - <code>03-ADRs/</code> <em>(korte beslutninger)</em></p>
+<p>  - <code>10-Backlog.md</code> <em>(eller issues)</em></p>
+<p>  - <code>20-Runbooks/</code> *(drift/feil, “hva gjør jeg når…”)`</p>
+<p>  - <code>30-Experiments/</code> *(spikes med tydelig “resultat/konklusjon”)`</p>
+<p>  - <code>Context-Pack.md</code> <em>(AI inngang, alltid oppdatert)</em></p>
+<ul>
+<li><code>prototype/</code> <em>(spikes, kan slettes)</em></li>
+<li><code>app/</code> <em>(produksjonskode)</em></li>
+<li><code>scripts/</code> <em>(verktøy, migrering, hygiene)</em></li>
+<li><code>.cursor/</code> <em>(project rules / memories / prompts)</em></li>
+</ul>
+
+<p><strong>Viktig regel:</strong>  </p>
+<p>Markdown-filer skal enten være <strong>styringsdokument</strong> (brief/adr/runbook), eller <strong>resultat</strong> (experiment report). Ikke “løse tanker”.</p>
+
+<hr>
+
+<h2 id="source-of-truth-og-styringsdokumenter">Source of truth og styringsdokumenter</h2>
+
+<h3 id="docs00-project-briefmd-alltid-oppdatert">`docs/00-Project-Brief.md` (alltid oppdatert)</h3>
+<p>Inneholder:</p>
+<ul>
+<li><em>Hva bygger vi?</em></li>
+<li><em>Hvem er brukeren?</em></li>
+<li><em>Non-negotiables</em> (krav du ikke forhandler om)</li>
+<li><em>Negotiables</em> (ting som kan nedprioriteres/endres)</li>
+<li><em>Definition of Done</em> for v1</li>
+<li><em>Risikoer/antagelser</em> (og hvordan de valideres)</li>
+</ul>
+
+<h3 id="docscontext-packmd-ai-sin-faste-inngang">`docs/Context-Pack.md` (AI sin faste inngang)</h3>
+<p>Hold den kort (maks ~1–2 skjermer):</p>
+
+<pre><code class="language-md"># Context Pack (always current)
+
+## Status now
+- What works:
+- What is broken:
+- Biggest risk right now:
+
+## Current goal (this week)
+- Primary goal:
+- Deadline / milestone:
+- Definition of Done (v1 slice):
+
+## Non-negotiables
+- Security constraints:
+- Performance constraints:
+- UX constraints:
+
+## Known failures / do-not-repeat
+- Tried X → failed because Y (link to logs/PR/commit):
+- Tried A → caused regression B (link):
+
+## Key entry points
+- Main modules:
+- Config files:
+- CI / scripts:
+- Runbooks:
+
+## How to verify quickly
+- Commands:
+- URLs:
+- Expected outputs:</code></pre>
+
+<hr>
+
+<h2 id="roller-deg-ai">Roller (deg + AI)</h2>
+
+<h3 id="menneske-deg">Menneske (deg)</h3>
+<ul>
+<li>Product Owner: scope, v1-v2, prioritet, akseptkriterier</li>
+<li>Tech Lead: arkitekturvalg, standarder, “no-go” på sikkerhet</li>
+<li>QA Lead: teststrategi + hvilke flows som må beskyttes</li>
+</ul>
+
+<h3 id="ai-roller-du-kaller-dem-eksplisitt-i-prompts">AI-roller (du kaller dem eksplisitt i prompts)</h3>
+<p>1) <strong>Staff Engineer (plan + ADR)</strong>  </p>
+<p>2) <strong>Implementer (agent)</strong>  </p>
+<p>3) <strong>Refactor Sheriff</strong>  </p>
+<p>4) <strong>SRE/DevOps</strong>  </p>
+<p>5) <strong>QA/Test Engineer</strong>  </p>
+<p>6) <strong>Debugger (thinking-only)</strong>  </p>
+
+<hr>
+
+<h2 id="faser-i-prosjektet">Faser i prosjektet</h2>
+
+<h3 id="fase-0-redningsaksjon-du-er-her-na">Fase 0: Redningsaksjon (du er her nå)</h3>
+<p>Mål: få oversikt, stabilisere, stoppe blødningen.</p>
+<ul>
+<li>Lag <code>00-Project-Brief.md</code> (1–2 sider)</li>
+<li>Lag <code>10-Backlog.md</code> og flytt “alt rot” inn som korte items</li>
+<li>Marker alt med: <code>KEEP</code> / <code>DELETE</code> / <code>MAYBE</code> / <code>REPLACE</code></li>
+<li>Lag en “Freeze-list”: ting AI ikke får røre uten eksplisitt oppgave (auth, billing, infra, ingest pipeline, osv.)</li>
+</ul>
+
+<h3 id="fase-1-konsolidering">Fase 1: Konsolidering</h3>
+<p>Mål: én måte å gjøre ting på.</p>
+<ul>
+<li>Standarder (naming, folder conventions, lint, format, types)</li>
+<li>ADRs for de 5 største valgene (kort)</li>
+<li>Flytt “proto” til <code>prototype/</code> eller “prod” til <code>app/</code> med tester</li>
+</ul>
+
+<h3 id="fase-2-v1-vertical-slices">Fase 2: V1 Vertical Slices</h3>
+<p>Mål: ferdige brukerflyter, ikke “mange features”.</p>
+<ul>
+<li>Topp 3–5 kritiske flows</li>
+<li>For hver flow:</li>
+</ul>
+<p>  - Akseptkriterier (menneske)</p>
+<p>  - Instrumentering/logging (SRE)</p>
+<p>  - Implementasjon (agent)</p>
+<p>  - Tester (QA)</p>
+<p>  - Review (deg)</p>
+
+<h3 id="fase-3-hardening">Fase 3: Hardening</h3>
+<p>Mål: tåler ekte bruk.</p>
+<ul>
+<li>Observability (metrics/logs/traces)</li>
+<li>Sikkerhet (secrets, RBAC, rate limiting)</li>
+<li>Performance/regresjonstester for kritiske paths</li>
+</ul>
+
+<h3 id="fase-4-release-drift">Fase 4: Release & Drift</h3>
+<p>Mål: shipping-rytme.</p>
+<ul>
+<li>Release notes</li>
+<li>Runbooks</li>
+<li>Bugfix lane</li>
+</ul>
+
+<hr>
+
+<h2 id="non-negotiables-vs-negotiables">Non-negotiables vs negotiables</h2>
+
+<h3 id="non-negotiables-eksempler">Non-negotiables (eksempler)</h3>
+<ul>
+<li>Ingen secrets i repo</li>
+<li>Ingen feature uten logging på kritisk path (når relevant)</li>
+<li>Ingen større endring uten test for kritisk logikk (når relevant)</li>
+<li>CI må være grønn før merge</li>
+<li>ADR for store valg (1 side)</li>
+</ul>
+
+<h3 id="negotiables-eksempler">Negotiables (eksempler)</h3>
+<ul>
+<li>UI polish</li>
+<li>Antall integrasjoner i v1</li>
+<li>Avanserte dashboards</li>
+<li>Auto-scaling / HA i v1</li>
+</ul>
+
+<hr>
+
+<h2 id="hygiene-rutiner">Hygiene-rutiner</h2>
+
+<h3 id="daglig-1020-min">Daglig (10–20 min)</h3>
+<p>1) <strong>Inbox-to-backlog</strong> (ikke nye markdown-filer)</p>
+<p>2) <strong>Journal / experiment note</strong></p>
+<p>3) <strong>Oppdater Context-Pack</strong></p>
+
+<h3 id="ukentlig-6090-min">Ukentlig (60–90 min)</h3>
+<p>1) <strong>Rydding: KEEP/DELETE/MAYBE</strong></p>
+<p>2) <strong>Duplicate sweep</strong></p>
+<p>3) <strong>ADR-sprint (maks 3)</strong></p>
+
+<h3 id="per-feature-pr">Per feature / PR</h3>
+<ul>
+<li>Akseptkriterier</li>
+<li>Hvilke filer er “source of truth”</li>
+<li>Hvilke logger/metrics beviser at det funker</li>
+<li>Hvilke tester beskytter dette</li>
+<li>Rollback-plan</li>
+</ul>
+
+<hr>
+
+<h2 id="ny-chat-og-handoff">Ny chat og handoff</h2>
+
+<h3 id="apne-ny-chat-nar">Åpne ny chat når…</h3>
+<ul>
+<li>Tema skifter (ny feature/modul)</li>
+<li>Chatten er blitt “forurenset”</li>
+<li>Du trenger en ny rolle (plan ↔ implement)</li>
+<li>Debugging er stuck</li>
+<li>Stor rydding / hardening</li>
+</ul>
+
+<h3 id="handoff-pakke-copypaste">Handoff-pakke (copy/paste)</h3>
+<pre><code class="language-text">Read docs/Context-Pack.md and docs/00-Project-Brief.md first.
+
+Project state:
+- Branch:
+- Last known good commit/PR:
+- Environment:
+
+What we were doing:
+- Goal:
+
+What changed (paths):
+- &lt;path&gt;: &lt;what changed&gt;
+
+What is still broken / missing:
+- Symptom:
+  Evidence:
+  Repro:
+
+Known do-not-repeat:
+- Tried X → failed because Y (link/log)
+- Do NOT add dependencies or refactor broadly.
+
+Task now:
+- Next smallest step
+
+Scope control:
+- Allowed paths:
+- Forbidden:
+
+Non-negotiables:
+- Minimal diffs, verify + rollback, no conclusions from single datapoint
+
+Verification:
+- Commands:
+- Expected results:
+
+Role: &lt;Debugger / Staff Engineer / Implementer / Refactor Sheriff / QA / SRE&gt;</code></pre>
+
+<hr>
+
+<h2 id="agent-mode-definition-of-done">Agent-mode Definition of Done</h2>
+
+<pre><code class="language-text">- Acceptance criteria met (explicitly mapped).
+- Minimal diff: no unrelated refactors.
+- Code builds/starts; lint/format passes.
+- Tests: added/updated for critical logic OR reason given why not.
+- Logging/metrics: added where it reduces future debugging cost (optional but preferred on critical paths).
+- Docs updated if behavior/config changed.
+- No secrets committed; configs use env vars/templates.
+- Verification steps provided (exact commands + expected result).
+- Rollback steps provided (what to revert / feature flag / config toggle).
+- Remaining risks listed with mitigation and next action.</code></pre>
+
+<p>Hard stop (agent must ask):</p>
+<ul>
+<li>Delete/rename major modules</li>
+<li>Security implications (auth/secrets)</li>
+<li>New dependencies/infra</li>
+<li>Broad rewrites not explicitly requested</li>
+</ul>
+
+<hr>
+
+<h2 id="prompt-maler-per-rolle">Prompt-maler per rolle</h2>
+
+<h3 id="staff-engineer-opus-thinking">Staff Engineer (Opus Thinking)</h3>
+<pre><code class="language-text">ROLE: Staff Engineer (planning + architecture + risk)
+MODE: Thinking-only. No implementation.
+
+Use ONLY facts from the repo. If missing context, propose assumptions explicitly.
+
+INPUT:
+- Context-Pack: (paste)
+- Task: &lt;TASK&gt;
+- Constraints: &lt;CONSTRAINTS&gt;
+- Files to consider: &lt;PATHS&gt;
+
+OUTPUT:
+1) Problem statement
+2) 2–3 options (tradeoffs)
+3) Recommendation
+4) Step-by-step plan (small PR steps)
+5) Verification plan
+6) Rollback plan
+7) ADR draft (short)
+8) Stop &amp; ask list</code></pre>
+
+<h3 id="implementer-agent">Implementer (Agent)</h3>
+<pre><code class="language-text">ROLE: Implementer (agent)
+GOAL: Implement with minimal diff, safely.
+
+Rules:
+- No unrelated refactors.
+- No new deps without ADR approval.
+- Include verification and rollback.
+- Update docs if behavior changes.
+
+INPUT:
+- Context-Pack
+- Task
+- Acceptance criteria
+- Target files
+
+DELIVERABLE:
+1) Summary of changes
+2) Commands to verify (+ expected result)
+3) Rollback steps
+4) New risks introduced
+Stop and ask if: deletion/rename, security implication, deps, global refactor</code></pre>
+
+<h3 id="refactor-sheriff">Refactor Sheriff</h3>
+<pre><code class="language-text">ROLE: Refactor Sheriff
+MODE: Conservative refactor. Safety first.
+
+INPUT:
+- Context-Pack
+- Goal
+- Scope limit: &lt;PATHS ONLY&gt;
+
+OUTPUT:
+1) Inventory: duplicates, dead code, unused files (paths)
+2) KEEP/DELETE/MAYBE/REPLACE per item + reason
+3) “Golden path” (which module survives)
+4) Migration plan in 3–6 safe steps
+5) Verification plan
+6) Deletion policy: nothing deleted unless explicitly approved</code></pre>
+
+<h3 id="qatest-engineer">QA/Test Engineer</h3>
+<pre><code class="language-text">ROLE: QA/Test Engineer
+INPUT:
+- Context-Pack
+- Feature/flow
+- Acceptance criteria
+- Existing tests (paths)
+
+OUTPUT:
+1) Risk-based test matrix
+2) Recommended automated tests (unit/integration/e2e) with file targets
+3) Minimal smoke test checklist (manual)
+4) Test data/fixtures needed
+5) Regression traps (known failures)</code></pre>
+
+<h3 id="sredevops">SRE/DevOps</h3>
+<pre><code class="language-text">ROLE: SRE/DevOps Engineer
+INPUT:
+- Context-Pack
+- Objective
+- Environment
+- Current tooling (paths)
+
+OUTPUT:
+1) Current gaps (CI, secrets, logs, metrics, alerts)
+2) Minimal plan to add “rails” without slowing dev
+3) Proposed dashboards/log queries (if relevant)
+4) Verification checklist
+5) Rollback plan
+No new infra/paid services without explicit approval.</code></pre>
+
+<h3 id="debugger-thinking-only">Debugger (Thinking-only)</h3>
+<pre><code class="language-text">ROLE: Debugger (root-cause)
+MODE: Thinking-only. Do NOT implement changes yet.
+
+INPUT:
+- Symptom:
+- Evidence:
+- Context-Pack:
+- Suspect files:
+
+OUTPUT:
+1) 3–5 hypotheses ranked (with confidence)
+2) For each: what evidence would confirm/deny
+3) The fastest discriminating tests (commands/log points)
+4) Minimal fix plan once confirmed
+Rule: do not conclude from a single datapoint; require 2 independent datapoints.</code></pre>
+
+<hr>
+
+<h2 id="dokumentmaler-adr-experiment-runbooks">Dokumentmaler (ADR, experiment, runbooks)</h2>
+
+<h3 id="experiment-report">Experiment report</h3>
+<p><code>docs/30-Experiments/YYYY-MM-DD-<topic>.md</code></p>
+<pre><code class="language-md"># Experiment: &lt;topic&gt;
+## Goal
+## What we tried
+## Evidence (links/logs)
+## Result
+## Conclusion (confidence %)
+## Next step
+## Do-not-repeat</code></pre>
+
+<h3 id="adr">ADR</h3>
+<p><code>docs/03-ADRs/ADR-000X-<name>.md</code></p>
+<pre><code class="language-md"># ADR-000X: &lt;decision&gt;
+## Context
+## Decision
+## Options considered
+## Consequences
+## Verification</code></pre>
+
+<h3 id="runbook">Runbook</h3>
+<p><code>docs/20-Runbooks/<issue>.md</code></p>
+<pre><code class="language-md"># Runbook: &lt;issue&gt;
+## Symptoms
+## Quick checks
+## Likely causes
+## Fix steps (safe order)
+## Verification
+## Rollback
+## Notes / links</code></pre>
+
+<hr>
+
+<h2 id="debugging-anti-bombastiske-regler">Debugging: anti-bombastiske regler</h2>
+<p>Bruk “observasjonskrav” i prompts:</p>
+<ul>
+<li>“List 3 mulige forklaringer, ranger dem, og si hvilken logg/kommando vil skille dem.”</li>
+<li>“Ikke konkluder før minst 2 uavhengige datapunkter.”</li>
+<li>“Hvis du foreslår endring, inkluder hvordan vi verifiserer og hvordan vi ruller tilbake.”</li>
+<li>“Hvis usikker: hypoteser + testplan i stedet for store kodeendringer.”</li>
+</ul>

@@ -1,0 +1,118 @@
+<h1 id="vibecoding-quickstart-for-late-vibe-coders">Vibecoding Quickstart (for late vibe-coders)</h1>
+
+<blockquote>Mål: Få ting gjort raskt uten å lage mer rot.</blockquote>
+
+<h2 id="1-daglig-rutine-10-min">1) Daglig rutine (10 min)</h2>
+<ol>
+<li>Oppdater <code>docs/Context-Pack.md</code> (kort!):</li>
+</ol>
+<p>   - Hva funker / hva er ødelagt / ukas mål / do-not-repeat / verify-kommandoer</p>
+<ol>
+<li>Alt du “oppdager” → backlog (ikke nye markdown-filer)</li>
+<li>Hvis du prøver noe nytt: legg en <strong>1-sides experiment note</strong> i <code>docs/30-Experiments/</code></li>
+</ol>
+
+<hr>
+
+<h2 id="2-nar-du-starter-en-oppgave-standard-loop">2) Når du starter en oppgave (standard loop)</h2>
+<p>1) <strong>Opus Thinking</strong> → plan + verify + rollback  </p>
+<p>2) <strong>Agent</strong> → implementasjon i små steg  </p>
+<p>3) <strong>QA</strong> → minimum tests / smoke  </p>
+<p>4) <strong>Du</strong> → review + merge  </p>
+<p>5) Oppdater Context-Pack + backlog</p>
+
+<hr>
+
+<h2 id="3-nar-du-apner-en-ny-chat-alltid-bruk-dette">3) Når du åpner en NY chat (alltid bruk dette)</h2>
+<pre><code class="language-text">Read Context-Pack + Brief first.
+
+Previous chat summary:
+- Goal:
+- What changed (paths):
+- Still broken (symptom + evidence + repro):
+- Do-not-repeat:
+
+Task now (next smallest step):
+- ...
+
+Scope:
+- Allowed: &lt;paths&gt;
+- Forbidden: auth/billing/secrets/infra/global refactor/deps
+
+Verification:
+- Commands:
+- Expected result:
+
+Role: &lt;Debugger / Staff Engineer / Implementer&gt;</code></pre>
+
+<hr>
+
+<h2 id="4-nar-apner-du-ny-chat">4) Når åpner du ny chat?</h2>
+<p>Åpne ny chat når:</p>
+<ul>
+<li>du bytter feature/modul</li>
+<li>debugging er kaotisk (start Debugger)</li>
+<li>du skal rydde/duplikatjakt (Refactor Sheriff)</li>
+<li>du skal hardene/release (SRE/QA)</li>
+</ul>
+
+<hr>
+
+<h2 id="5-project-rules-lim-inn-i-cursor-rules">5) Project Rules (lim inn i Cursor Rules)</h2>
+<pre><code class="language-text">- Minimal diffs. No unrelated refactors.
+- No new dependencies without ADR approval.
+- No secrets in repo.
+- Every change must include: verify + rollback.
+- Debugging: hypotheses + discriminating tests; no conclusions from 1 datapoint.
+- Prototype code stays in /prototype. Production in /app.
+- Don’t create new markdown files unless asked; update existing docs instead.</code></pre>
+
+<hr>
+
+<h2 id="6-agent-definition-of-done-bruk-pa-hver-oppgave">6) Agent Definition of Done (bruk på hver oppgave)</h2>
+<pre><code class="language-text">- Acceptance criteria met.
+- Minimal diff.
+- Builds/starts; lint/format ok.
+- Tests added/updated OR reason why not.
+- Verify steps + expected output.
+- Rollback steps.
+- No secrets.
+- Docs updated if behavior/config changed.</code></pre>
+
+<p>Hard stop (agent må spørre):</p>
+<ul>
+<li>slette/rename store moduler</li>
+<li>auth/secrets/infra</li>
+<li>nye dependencies</li>
+<li>store rewrites</li>
+</ul>
+
+<hr>
+
+<h2 id="7-tre-prompts-du-trenger-90-av-tiden">7) Tre prompts du trenger 90% av tiden</h2>
+
+<h3 id="a-plan-opus-thinking">A) Plan (Opus Thinking)</h3>
+<pre><code class="language-text">ROLE: Staff Engineer (thinking-only). No implementation.
+Use only repo facts.
+Output: options + recommendation + step plan + verify + rollback + ADR draft.
+Input: Context-Pack + Task + Constraints + Paths.</code></pre>
+
+<h3 id="b-implement-agent">B) Implement (Agent)</h3>
+<pre><code class="language-text">ROLE: Implementer (agent).
+Minimal diff. No new deps. Include verify + rollback. Add tests for critical logic.
+Input: Context-Pack + Task + Acceptance criteria + Target paths.</code></pre>
+
+<h3 id="c-stuck-debugger-fr-du-koder">C) Stuck? Debugger før du koder</h3>
+<pre><code class="language-text">ROLE: Debugger (thinking-only). Do NOT implement.
+Rank 3–5 hypotheses + discriminating tests.
+Require 2 independent datapoints before concluding.
+Input: symptom + logs + Context-Pack + suspect paths.</code></pre>
+
+<hr>
+
+<h2 id="8-mikro-maler">8) Mikro-maler</h2>
+<h3 id="experiment-1-side">Experiment (1 side)</h3>
+<pre><code class="language-md">Goal → What we tried → Evidence → Result → Conclusion (confidence %) → Next step → Do-not-repeat</code></pre>
+
+<h3 id="adr-kort">ADR (kort)</h3>
+<pre><code class="language-md">Context → Decision → Options → Consequences → Verification</code></pre>
