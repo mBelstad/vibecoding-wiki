@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  vibecoding-wiki:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vibecoding-wiki
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    labels:
+      # Coolify labels (Coolify will override these)
+      - "coolify.managed=true"
+      # Traefik labels for reverse proxy
+      - "traefik.enable=true"
+      - "traefik.http.routers.vibecoding-wiki.rule=Host(`wiki.example.com`)"
+      - "traefik.http.routers.vibecoding-wiki.entrypoints=websecure"
+      - "traefik.http.routers.vibecoding-wiki.tls.certresolver=letsencrypt"
+      - "traefik.http.services.vibecoding-wiki.loadbalancer.server.port=80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+

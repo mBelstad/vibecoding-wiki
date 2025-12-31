@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# Documentation (not needed in production)
+*.md
+!README.md
+
+# Development files
+convert-markdown.js
+serve.sh
+
+# macOS
+.DS_Store
+._*
+
+# Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Node (if any)
+node_modules
+
+# Deployment scripts (not needed in container)
+deploy-*.sh
+connect-*.sh
+ssh-setup.sh
+

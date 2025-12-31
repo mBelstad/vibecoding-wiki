@@ -4,7 +4,50 @@ This guide covers various deployment options for the Vibecoding Wiki.
 
 ## 🚀 Quick Deploy Options
 
-### Option 1: GitHub Pages (Recommended)
+### Option 1: Coolify (Recommended)
+
+This project is configured for easy deployment on Coolify.
+
+**Prerequisites:**
+- Coolify instance running
+- GitHub repository connected to Coolify
+
+**Deployment Steps:**
+
+1. **In Coolify Dashboard:**
+   - Go to Projects → Add New Resource
+   - Select "Public Repository" or connect your GitHub
+   - Enter: `https://github.com/mBelstad/vibecoding-wiki`
+   - Select branch: `main`
+
+2. **Build Configuration:**
+   - Build Pack: `Dockerfile`
+   - Dockerfile: `Dockerfile` (auto-detected)
+   - Port: `80`
+
+3. **Domain Configuration:**
+   - Add your domain (e.g., `wiki.yourdomain.com`)
+   - Enable SSL (Let's Encrypt)
+
+4. **Deploy:**
+   - Click "Deploy"
+   - Wait for build to complete (~1-2 minutes)
+
+**Health Check:**
+- Endpoint: `/health`
+- The container includes a health check that Coolify will monitor
+
+**Features Included:**
+- ✅ Nginx-based static serving
+- ✅ Gzip compression enabled
+- ✅ Security headers configured
+- ✅ Cache headers for static assets
+- ✅ Health check endpoint
+- ✅ Traefik-ready labels
+
+---
+
+### Option 2: GitHub Pages
 
 1. **Create a GitHub repository**
    ```bash
