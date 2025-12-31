@@ -93,29 +93,36 @@
     <script src="js/toc.js"></script>
     <script src="js/app.js"></script>
     <script>
-        // Load content
-        fetch('playbook-quickstart-content.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('docsContent').innerHTML = html;
-                // Trigger syntax highlighting
-                if (window.Prism) Prism.highlightAll();
-                // Reinitialize TOC
-                if (window.toc) window.toc = new TableOfContents();
-                // Reinitialize search
-                if (window.search) window.search = new Search();
-                // Scroll to hash if present
-                if (window.location.hash) {
-                    setTimeout(() => {
-                        const element = document.getElementById(window.location.hash.substring(1));
-                        if (element) element.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                }
-            })
-            .catch(error => {
-                console.error('Error loading content:', error);
-                document.getElementById('docsContent').innerHTML = '<p>Error loading content. Please refresh the page.</p>';
-            });
+        // Load content based on language
+        function loadContent() {
+            const lang = localStorage.getItem('vibecoding-lang') || 'no';
+            const contentFile = lang === 'en' ? 'playbook-quickstart-content-en.html' : 'playbook-quickstart-content.html';
+            
+            fetch(contentFile)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('docsContent').innerHTML = html;
+                    // Trigger syntax highlighting
+                    if (window.Prism) Prism.highlightAll();
+                    // Reinitialize TOC
+                    if (window.toc) window.toc = new TableOfContents();
+                    // Reinitialize search
+                    if (window.search) window.search = new Search();
+                    // Scroll to hash if present
+                    if (window.location.hash) {
+                        setTimeout(() => {
+                            const element = document.getElementById(window.location.hash.substring(1));
+                            if (element) element.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading content:', error);
+                    document.getElementById('docsContent').innerHTML = '<p>Error loading content. Please refresh the page.</p>';
+                });
+        }
+        
+        loadContent();
     </script>
 </body>
 </html>

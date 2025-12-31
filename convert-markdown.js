@@ -203,12 +203,22 @@ const files = [
   { 
     input: 'Vibecoding_Playbook_Full.md', 
     output: 'playbook-full-content.html',
-    title: 'Full Playbook'
+    title: 'Full Playbook (NO)'
   },
   { 
     input: 'Vibecoding_Playbook_Quickstart.md', 
     output: 'playbook-quickstart-content.html',
-    title: 'Quickstart'
+    title: 'Quickstart (NO)'
+  },
+  { 
+    input: 'Vibecoding_Playbook_Full_EN.md', 
+    output: 'playbook-full-content-en.html',
+    title: 'Full Playbook (EN)'
+  },
+  { 
+    input: 'Vibecoding_Playbook_Quickstart_EN.md', 
+    output: 'playbook-quickstart-content-en.html',
+    title: 'Quickstart (EN)'
   }
 ];
 

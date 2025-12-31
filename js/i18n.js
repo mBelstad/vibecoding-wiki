@@ -26,7 +26,8 @@ const translations = {
     'footer.text': 'Vibecoding Playbook - Cursor + Claude Sonnet/Opus',
     'toc.title': 'På denne siden',
     'search.placeholder': 'Søk...',
-    'search.noResults': 'Ingen resultater funnet'
+    'search.noResults': 'Ingen resultater funnet',
+    'content.file': 'playbook-full-content.html'
   },
   en: {
     'hero.title': 'Vibecoding Playbook',
@@ -52,7 +53,8 @@ const translations = {
     'footer.text': 'Vibecoding Playbook - Cursor + Claude Sonnet/Opus',
     'toc.title': 'On this page',
     'search.placeholder': 'Search...',
-    'search.noResults': 'No results found'
+    'search.noResults': 'No results found',
+    'content.file': 'playbook-full-content-en.html'
   }
 };
 
@@ -99,6 +101,47 @@ class I18n {
 
     // Update HTML lang attribute
     document.documentElement.lang = lang;
+    
+    // Reload content if on docs page
+    const docsContent = document.getElementById('docsContent');
+    if (docsContent && window.location.pathname.includes('playbook')) {
+      this.reloadContent(lang);
+    }
+  }
+  
+  reloadContent(lang) {
+    const docsContent = document.getElementById('docsContent');
+    if (!docsContent) return;
+    
+    // Determine which content file to load
+    let contentFile;
+    if (window.location.pathname.includes('playbook-full')) {
+      contentFile = lang === 'en' ? 'playbook-full-content-en.html' : 'playbook-full-content.html';
+    } else if (window.location.pathname.includes('playbook-quickstart')) {
+      contentFile = lang === 'en' ? 'playbook-quickstart-content-en.html' : 'playbook-quickstart-content.html';
+    } else {
+      return;
+    }
+    
+    // Load the content
+    fetch(contentFile)
+      .then(response => response.text())
+      .then(html => {
+        docsContent.innerHTML = html;
+        // Trigger syntax highlighting
+        if (window.Prism) window.Prism.highlightAll();
+        // Reinitialize TOC
+        if (window.TableOfContents) {
+          window.toc = new TableOfContents();
+        }
+        // Reinitialize search
+        if (window.Search) {
+          window.search = new Search();
+        }
+      })
+      .catch(error => {
+        console.error('Error loading translated content:', error);
+      });
   }
 
   updateToggleButton() {

@@ -1,0 +1,119 @@
+<h1 id="vibecoding-quickstart-for-late-vibe-coders">Vibecoding Quickstart (for late vibe-coders)</h1>
+
+<blockquote>Goal: Get things done quickly without creating more mess.</blockquote>
+
+<h2 id="1-daily-routine-10-min">1) Daily routine (10 min)</h2>
+<ol>
+<li>Update <code>docs/Context-Pack.md</code> (short!):</li>
+</ol>
+<p>   - What works / what's broken / this week's goal / do-not-repeat / verify commands</p>
+<ol>
+<li>Everything you "discover" → backlog (not new markdown files)</li>
+<li>If you try something new: add a <strong>1-page experiment note</strong> in <code>docs/30-Experiments/</code></li>
+</ol>
+
+<hr>
+
+<h2 id="2-when-you-start-a-task-standard-loop">2) When you start a task (standard loop)</h2>
+<p>1) <strong>Opus Thinking</strong> → plan + verify + rollback  </p>
+<p>2) <strong>Agent</strong> → implementation in small steps  </p>
+<p>3) <strong>QA</strong> → minimum tests / smoke  </p>
+<p>4) <strong>You</strong> → review + merge  </p>
+<p>5) Update Context-Pack + backlog</p>
+
+<hr>
+
+<h2 id="3-when-you-open-a-new-chat-always-use-this">3) When you open a NEW chat (always use this)</h2>
+<pre><code class="language-text">Read Context-Pack + Brief first.
+
+Previous chat summary:
+- Goal:
+- What changed (paths):
+- Still broken (symptom + evidence + repro):
+- Do-not-repeat:
+
+Task now (next smallest step):
+- ...
+
+Scope:
+- Allowed: &lt;paths&gt;
+- Forbidden: auth/billing/secrets/infra/global refactor/deps
+
+Verification:
+- Commands:
+- Expected result:
+
+Role: &lt;Debugger / Staff Engineer / Implementer&gt;</code></pre>
+
+<hr>
+
+<h2 id="4-when-do-you-open-a-new-chat">4) When do you open a new chat?</h2>
+<p>Open new chat when:</p>
+<ul>
+<li>you switch feature/module</li>
+<li>debugging is chaotic (start Debugger)</li>
+<li>you're going to clean/duplicate hunt (Refactor Sheriff)</li>
+<li>you're going to harden/release (SRE/QA)</li>
+</ul>
+
+<hr>
+
+<h2 id="5-project-rules-paste-into-cursor-rules">5) Project Rules (paste into Cursor Rules)</h2>
+<pre><code class="language-text">- Minimal diffs. No unrelated refactors.
+- No new dependencies without ADR approval.
+- No secrets in repo.
+- Every change must include: verify + rollback.
+- Debugging: hypotheses + discriminating tests; no conclusions from 1 datapoint.
+- Prototype code stays in /prototype. Production in /app.
+- Don&#039;t create new markdown files unless asked; update existing docs instead.</code></pre>
+
+<hr>
+
+<h2 id="6-agent-definition-of-done-use-on-each-task">6) Agent Definition of Done (use on each task)</h2>
+<pre><code class="language-text">- Acceptance criteria met.
+- Minimal diff.
+- Builds/starts; lint/format ok.
+- Tests added/updated OR reason why not.
+- Verify steps + expected output.
+- Rollback steps.
+- No secrets.
+- Docs updated if behavior/config changed.</code></pre>
+
+<p>Hard stop (agent must ask):</p>
+<ul>
+<li>delete/rename large modules</li>
+<li>auth/secrets/infra</li>
+<li>new dependencies</li>
+<li>large rewrites</li>
+</ul>
+
+<hr>
+
+<h2 id="7-three-prompts-you-need-90-of-the-time">7) Three prompts you need 90% of the time</h2>
+
+<h3 id="a-plan-opus-thinking">A) Plan (Opus Thinking)</h3>
+<pre><code class="language-text">ROLE: Staff Engineer (thinking-only). No implementation.
+Use only repo facts.
+Output: options + recommendation + step plan + verify + rollback + ADR draft.
+Input: Context-Pack + Task + Constraints + Paths.</code></pre>
+
+<h3 id="b-implement-agent">B) Implement (Agent)</h3>
+<pre><code class="language-text">ROLE: Implementer (agent).
+Minimal diff. No new deps. Include verify + rollback. Add tests for critical logic.
+Input: Context-Pack + Task + Acceptance criteria + Target paths.</code></pre>
+
+<h3 id="c-stuck-debugger-before-you-code">C) Stuck? Debugger before you code</h3>
+<pre><code class="language-text">ROLE: Debugger (thinking-only). Do NOT implement.
+Rank 3–5 hypotheses + discriminating tests.
+Require 2 independent datapoints before concluding.
+Input: symptom + logs + Context-Pack + suspect paths.</code></pre>
+
+<hr>
+
+<h2 id="8-micro-templates">8) Micro-templates</h2>
+<h3 id="experiment-1-page">Experiment (1 page)</h3>
+<pre><code class="language-md">Goal → What we tried → Evidence → Result → Conclusion (confidence %) → Next step → Do-not-repeat</code></pre>
+
+<h3 id="adr-short">ADR (short)</h3>
+<pre><code class="language-md">Context → Decision → Options → Consequences → Verification</code></pre>
+
