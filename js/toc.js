@@ -234,23 +234,76 @@ class TableOfContents {
       const copyBtn = header.querySelector('.copy-btn');
       copyBtn.addEventListener('click', () => {
         const code = codeBlock.textContent;
-        navigator.clipboard.writeText(code).then(() => {
-          const originalHTML = copyBtn.innerHTML;
-          copyBtn.classList.add('copied');
-          copyBtn.innerHTML = `
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Copied!</span>
-          `;
-          
-          setTimeout(() => {
-            copyBtn.classList.remove('copied');
-            copyBtn.innerHTML = originalHTML;
-          }, 2000);
-        });
+        this.copyToClipboard(code, copyBtn);
       });
     });
+  }
+
+  copyToClipboard(text, button) {
+    const originalHTML = button.innerHTML;
+    
+    const showSuccess = () => {
+      button.classList.add('copied');
+      button.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Copied!</span>
+      `;
+      
+      setTimeout(() => {
+        button.classList.remove('copied');
+        button.innerHTML = originalHTML;
+      }, 2000);
+    };
+
+    const showError = () => {
+      button.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Error</span>
+      `;
+      
+      setTimeout(() => {
+        button.innerHTML = originalHTML;
+      }, 2000);
+    };
+
+    // Try modern Clipboard API first (requires HTTPS)
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+        .then(showSuccess)
+        .catch(() => {
+          // Fallback to legacy method
+          this.legacyCopy(text) ? showSuccess() : showError();
+        });
+    } else {
+      // Use legacy method for HTTP
+      this.legacyCopy(text) ? showSuccess() : showError();
+    }
+  }
+
+  legacyCopy(text) {
+    // Legacy clipboard copy using textarea and execCommand
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    
+    let success = false;
+    try {
+      success = document.execCommand('copy');
+    } catch (err) {
+      console.error('Copy failed:', err);
+    }
+    
+    document.body.removeChild(textarea);
+    return success;
   }
 }
 
