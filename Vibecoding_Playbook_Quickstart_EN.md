@@ -125,3 +125,4 @@ Goal → What we tried → Evidence → Result → Conclusion (confidence %) →
 Context → Decision → Options → Consequences → Verification
 ```
 
+

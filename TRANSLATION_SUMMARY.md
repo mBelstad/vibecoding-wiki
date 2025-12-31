@@ -85,3 +85,4 @@ If you want to add more languages in the future:
 
 The wiki now supports full bilingual operation with seamless switching between Norwegian and English content.
 
+
